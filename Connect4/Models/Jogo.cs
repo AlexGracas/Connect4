@@ -8,8 +8,8 @@ namespace Connect4.Models
     public class Jogo
     {
         public int Id { get; set; }
-        Jogador Jogador1 { get; set; }
-        Jogador Jogador2 { get; set; }
+        public Jogador Jogador1 { get; set; }
+        public Jogador Jogador2 { get; set; }
         Tabuleiro Tabuleiro { get; set; }
     }
 }

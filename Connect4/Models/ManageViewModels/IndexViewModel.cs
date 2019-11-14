@@ -16,6 +16,15 @@ namespace Connect4.Models.ManageViewModels
         [EmailAddress]
         public string Email { get; set; }
 
+        [Required]
+        [Display(Name = "Nome")]
+        public string Nome { get; set; }
+
+        [Display(Name = "Data de nascimento")]
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime Nascimento { get; set; }
+
         [Phone]
         [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }

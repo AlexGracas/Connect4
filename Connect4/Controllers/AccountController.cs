@@ -220,7 +220,11 @@ namespace Connect4.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Nome = model.Nome };
+                var user = new ApplicationUser {    UserName = model.Email,
+                                                    Email = model.Email,
+                                                    Nome = model.Nome,
+                                                    Nascimento = model.Nascimento
+                };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

@@ -12,9 +12,10 @@ using System;
 namespace Connect4.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191111221735_aula1916")]
+    partial class aula1916
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,8 +40,6 @@ namespace Connect4.Data.Migrations
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<DateTime>("Nascimento");
 
                     b.Property<string>("Nome");
 
@@ -104,25 +103,17 @@ namespace Connect4.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("Jogador1Id");
-
-                    b.Property<int?>("Jogador2Id");
-
                     b.Property<int?>("JogadorPessoaId");
 
                     b.Property<int?>("TorneioId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Jogador1Id");
-
-                    b.HasIndex("Jogador2Id");
-
                     b.HasIndex("JogadorPessoaId");
 
                     b.HasIndex("TorneioId");
 
-                    b.ToTable("Jogos");
+                    b.ToTable("Jogo");
                 });
 
             modelBuilder.Entity("Connect4.Models.Torneio", b =>
@@ -292,14 +283,6 @@ namespace Connect4.Data.Migrations
 
             modelBuilder.Entity("Connect4.Models.Jogo", b =>
                 {
-                    b.HasOne("Connect4.Models.Jogador", "Jogador1")
-                        .WithMany()
-                        .HasForeignKey("Jogador1Id");
-
-                    b.HasOne("Connect4.Models.Jogador", "Jogador2")
-                        .WithMany()
-                        .HasForeignKey("Jogador2Id");
-
                     b.HasOne("Connect4.Models.JogadorPessoa")
                         .WithMany("Jogos")
                         .HasForeignKey("JogadorPessoaId");

@@ -59,6 +59,8 @@ namespace Connect4.Controllers
             {
                 Username = user.UserName,
                 Email = user.Email,
+                Nome = user.Nome,
+                Nascimento = user.Nascimento,
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage

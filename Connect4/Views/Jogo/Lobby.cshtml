@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Connect4.Models.Jogo>
+@{
+    ViewData["Title"] = "Sala de espera";
+}
+
+
+
+<div style="text-align: center">
+    <h2>Sala de espera</h2>
+    <div>
+        <span>Jogador 1:</span>
+        @if (model.Jogador1 == null)
+        {
+            <span>-</span>
+        }
+        else
+        {
+            @Html.DisplayNameFor(model => model.Jogador1.Id)
+        }
+    </div>
+    <br />
+    <div>
+        <span>Jogador 2:</span>
+        @if (model.Jogador2 == null)
+        {
+            <span>-</span>
+        }
+        else
+        {
+            @Html.DisplayNameFor(model => model.Jogador2.Id)
+        }
+
+    </div>
+    <br />
+    <br />
+    <button id="btnIniciar" class="btn btn-default">Iniciar</button>
+
+</div>
+

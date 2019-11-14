@@ -17,6 +17,11 @@ namespace Connect4.Models.AccountViewModels
         [Display(Name = "Nome")]
         public string Nome { get; set; }
 
+        [Display(Name = "Data de nascimento")]
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime Nascimento { get; set; }
+
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]

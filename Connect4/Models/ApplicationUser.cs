@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -12,5 +13,8 @@ namespace Connect4.Models
         public String Nome { get; set; }
 
         public JogadorPessoa jogador { get; set; } = new JogadorPessoa();
+
+        [DataType(DataType.Date)]
+        public DateTime Nascimento { get; set; }
     }
 }

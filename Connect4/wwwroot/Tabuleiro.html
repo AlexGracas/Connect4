@@ -1,138 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="css/CssTabuleiro.css"/>
+    <link rel=""/>
     <title>Jogo da velha</title>
-    <style type="text/css">
-        body {
-            text-align: center;
-        }
-        h1 {
-            margin-bottom: 60px;
-        }
-        div.tabuleiro {
-            margin: 0 auto 30px auto;
-            display: inline-block;
-			background-color: blue;
-			border-bottom: 5px solid darkblue;
-			border-right: 5px solid darkblue;
-			border-top: 5px solid lightblue;
-			border-left: 5px solid lightblue;
-			padding: 20px;
-			box-shadow: 10px 10px 5px;
-        }
-        div.row {
-            /*
-                O que é Flex?
-                https://origamid.com/projetos/flexbox-guia-completo/
-            */
-            display: flex;
-            /* 
-                Por que Justify Content:
-                https://css-tricks.com/snippets/css/a-guide-to-flexbox/
-            */
-            justify-content: flex-start;
-            /*
-                Align-Items:
-                Item 6 do link
-                https://origamid.com/projetos/flexbox-guia-completo/
-            */
-            align-items: center;
-        }
-        div.square {
-            width: 70px;			
-            height: 70px;
-            border: 5px solid darkblue;
-			border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content:center;
-			background: white;			
-        }
-        div.square:hover {
-            cursor: pointer;
-             filter: brightness(65%);
-        }        
-        div.Jogador1 {           
-			background-image: radial-gradient(circle, yellow, yellow,orange);
-        }        
-		div.Jogador2 {
-            background-image: radial-gradient(circle, red, red,darkred);
-        }        
-    </style>
-
 </head>
 <body>
-    <h1>Jogo da velha</h1>
+    <h1>Connect-4</h1>
     <button onclick="obterJogoServidor()">Iniciar Jogo</button>
 	<br/>
     <div id="Tabuleiro" class="tabuleiro">
 		
 	</div>
-    <script>
-	var tabuleiroDiv;
-	function AtualizarPosicao(coluna, linha, valor){
-		var posicaoDiv = document.querySelector("#Tabuleiro")
-								.querySelector("#linha-"+linha)
-								.querySelector("#posCol-"+coluna);
-								
-		posicaoDiv.classList.remove('Jogador1');
-		posicaoDiv.classList.remove('Jogador2');
-		if(valor ==1){
-			posicaoDiv.classList.add('Jogador1');
-		}else if(valor ==2 ){
-			posicaoDiv.classList.add('Jogador2');
-		}
-        }
-        function CriarLinha(colunas) {
-            var linha = document.createElement('div');
-            linha.classList.add('row');
-            for (var i = 0; i < colunas; i++) {
-                var posicaoDiv = document.createElement('div');
-                posicaoDiv.id = 'posCol-' + i;
-                posicaoDiv.classList.add('square');
-                linha.appendChild(posicaoDiv);
-            }
-
-            return linha;
-        }
-
-        function CriarTabuleiro(colunas, linhas) {
-            tabuleiroDiv = document.getElementById("Tabuleiro");
-            tabuleiroDiv.querySelectorAll('*').forEach(n => n.remove());
-            for (var i = linhas - 1; i >= 0; i--) {
-                var linhaDiv = CriarLinha(colunas);
-                linhaDiv.id = 'linha-' + i;
-                tabuleiroDiv.appendChild(linhaDiv);
-            }
-        }
-	
-
-
-    function obterJogoServidor() {
-        var xhttp = new XMLHttpRequest();
-        xhttp.responseType = 'json'
-        var URLObterJogo = "api/Jogo/Obter"
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                MontarTabuleiro(this.response);
-            }
-        };
-        //Prepara uma chamada GET no Servidor.
-        xhttp.open("GET", URLObterJogo, true);
-        //Envia a chamada.
-        xhttp.send();
-        }
-
-        function MontarTabuleiro(Tabuleiro) {
-            var TamanhoColunas = Tabuleiro.representacaoTabuleiro.length,
-                TamanhoLinhas = Tabuleiro.representacaoTabuleiro[0].length;
-            CriarTabuleiro(TamanhoColunas, TamanhoLinhas);
-            for (coluna = 0; coluna < TamanhoColunas; coluna++) {
-                for (linha = 0; linha < TamanhoLinhas; linha++) {
-                    AtualizarPosicao(coluna, linha, Tabuleiro.representacaoTabuleiro[coluna][linha]);
-                }
-            }
-        }
-    </script>
 </body>
 </html>
