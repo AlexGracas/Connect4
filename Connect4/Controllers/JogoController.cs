@@ -39,8 +39,17 @@ namespace Connect4.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Ação responsável por retornar os dados necessários para 
+        /// montagem e operação de um jogo.
+        /// </summary>
+        /// <param name="id">O id do Jogo.</param>
+        /// <returns></returns>
         public IActionResult Tabuleiro(int id)
         {
+            //Recupera Jogo do banco de dados.
+            //Repare que a inclusão de j.Jogador1, não trará
+            //j.Jogador1.Usuario, ver na ação de Lobby como fazer.
             var jogo = _context.Jogos
                             .Include(j => j.Jogador1)
                             .Include(j => j.Jogador2)
@@ -61,9 +70,17 @@ namespace Connect4.Controllers
             return View(jogo);
         }
 
+        /// <summary>
+        /// Lobby é uma sala de espera antes de iniciar o jogo.
+        /// Somente os jogadores 1 e 2 de um jogo podem 
+        /// entrar no Lobby de um Jogo.
+        /// </summary>
+        /// <param name="id">Id do jogo.</param>
+        /// <returns></returns>
         [Authorize]
         public IActionResult Lobby(int id)
         {
+            //Recupera o Jogo com o Objeto Jogadores.
             var jogo = _context.Jogos
                 .Include(j => j.Jogador1)
                 .Include(j => j.Jogador2)
@@ -71,13 +88,17 @@ namespace Connect4.Controllers
                 .Select(j => j)
                 .FirstOrDefault();
 
+            //Verifica se o id passado via parâmetro existe no banco de dados.
             if (jogo == null)
             {
+                //Caso não, retornará o erro 404.
                 return NotFound();
             }
-
+            //Verifica se Jogador 1 é uma pessoa.
             if (jogo.Jogador1 is JogadorPessoa)
             {
+                //Caso seja, será necessário recuperar 
+                //Jogador.Usuário, para recuperar o nome do Jogador.
                 jogo.Jogador1 = _context.JogadorPessoas
                                 .Include(j => j.Usuario)
                                 .Where(j => j.Id == jogo.Jogador1Id)
