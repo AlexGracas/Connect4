@@ -26,7 +26,7 @@ function CriarLinha(colunas) {
         posicaoDiv.id = 'posCol-' + i;
         posicaoDiv.classList.add('square');
         linha.appendChild(posicaoDiv);
-        posicaoDiv.click = function () { jogarServidor(jogoId, this.id.substr(7)); };
+        //posicaoDiv.click = function () { jogarServidor(jogoId, this.id.substr(7)); };
     }    
     return linha;
 }
@@ -128,19 +128,15 @@ function MontarTabuleiro(Tabuleiro) {
     //modifica a apresentação visual de acordo com o objeto Tabuleiro.
     for (coluna = 0; coluna < TamanhoColunas; coluna++) {
         for (linha = 0; linha < TamanhoLinhas; linha++) {
-            AtualizarPosicao(coluna, linha, Tabuleiro.representacaoTabuleiro[coluna][linha]);
-            $("#posCol-" + coluna).click(function () {
-                jogarServidor(jogoId, this.id.substr(7));
-            });
-        }
-        
+            AtualizarPosicao(coluna, linha, Tabuleiro.representacaoTabuleiro[coluna][linha]);            
+        }        
     }
-    //Adiciona um evento para no caso de ser clicado um dos espaços realizar uma jogada.    
-    /*for (coluna = 0; coluna < TamanhoColunas; coluna++) {
+    ///Adiciona um evento para no caso de ser clicado um dos espaços realizar uma jogada.    
+    for (coluna = 0; coluna < TamanhoColunas; coluna++) {
         $("#posCol-" + coluna).click(function () {
             jogarServidor(jogoId, this.id.substr(7));
         });
-    }*/
+    }
     
     
 
