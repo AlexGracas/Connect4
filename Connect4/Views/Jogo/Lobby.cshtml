@@ -1,4 +1,4 @@
-﻿@model Jogo
+﻿@model Connect4.Models.JoggoViewModel.LobbyViewModel
 
 @using Microsoft.AspNetCore.Identity
 
@@ -11,30 +11,42 @@
 <h2>Lobby</h2>
 
 <span>Jogador 1:</span>
-@if (Model.Jogador1 == null)
+@if (Model.jogo.Jogador1 == null)
 {
-    <span>ESPERANDO O ADVERSÁRIO</span>
+    <span>Esperando o Adversário.</span>
 }
 else
 {
-    <span>@Model.Jogador1.Nome</span>
+    <span>@Model.jogo.Jogador1.Nome</span>
 }
 
-    <span>Jogador 2:</span>
-@if (Model.Jogador2 == null)
+<span>Jogador 2:</span>
+@if (Model.jogo.Jogador2 == null)
 {
-    <span>ESPERANDO O ADVERSÁRIO</span>
+    @if (Model.jogo.Jogador1Id == UserManager.GetUserAsync(User).Result.JogadorId)
+    {
+        <form asp-action="Lobby" method="post">
+        <div class="form-group">
+        <select asp-for="jogo.Jogador2Id" asp-items="@Model.Items"></select>
+        </div>
+        <button type="submit" class="btn btn-default">Iniciar</button>
+        </form>
+    }
+    else
+    {
+        <span>Esperando o Adversário.</span>
+    }
 }
 else
 {
-    <span>@Model.Jogador2.Nome</span>
+    <span>@Model.jogo.Jogador2.Nome</span>
 }
 
-@if (Model.Jogador1Id != null && Model.Jogador2Id != null)
+@if (Model.jogo.Jogador1Id != null && Model.jogo.Jogador2Id != null)
 {
     //É utilizado jogador1Id para evitar problemas caso o controller
     //não tenha incluído (include) explicitamente a propriedade Jogador
     <a asp-area="" asp-controller="Jogo"
        asp-action="Tabuleiro"
-       asp-route-id="@Model.Id">Iniciar Jogo</a>
+       asp-route-id="@Model.jogo.Id">Iniciar Jogo</a>
 }

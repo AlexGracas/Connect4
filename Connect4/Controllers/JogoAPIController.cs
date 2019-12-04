@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Connect4.Data;
 using Connect4.Models;
@@ -10,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Connect4.Controllers
 {
@@ -93,6 +96,8 @@ namespace Connect4.Controllers
         {
             var jogo = _context.Jogos
                 .Include(j => j.Tabuleiro)
+                .Include(j=> j.Jogador1)
+                .Include(j => j.Jogador2)
                 .Where(j => j.Id == JogoId)
                 .FirstOrDefault();
             if(jogo == null)
@@ -108,8 +113,43 @@ namespace Connect4.Controllers
             //Verificar se ele pode fazer a jogada.
             //Por último executar a jogada ou exceção.
             jogo.Tabuleiro.Jogar(jogo.Tabuleiro.Turno, Pos);
+
+
+
+            var outroJogador = jogo.Tabuleiro.Turno == 1? jogo.Jogador1 : jogo.Jogador2;
+            if ( outroJogador is JogadorComputador)
+            {
+                var jogada = this.JogarComputador(jogo.Tabuleiro, (JogadorComputador)outroJogador);
+                jogo.Tabuleiro.Jogar(
+                    jogo.Tabuleiro.Turno,
+                    jogada.Result);
+            }
             _context.SaveChanges();
+
             return Ok(jogo.Tabuleiro);
+        }
+
+        private async Task<int> JogarComputador(Tabuleiro t, JogadorComputador jc)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                StringContent content = new StringContent(JsonConvert.SerializeObject(t), 
+                    Encoding.UTF8, 
+                    "application/json");
+
+                using (var response = await httpClient.PostAsync(jc.URLServico, content))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        return JsonConvert.DeserializeObject<int>(apiResponse);
+                    }
+                    else
+                    {
+                        throw new ApplicationException("Erro ao conectar ao serviço de Inteligência Artificial. Código:" + response.StatusCode.ToString());
+                    }                                        
+                }
+            }
         }
     }
 }

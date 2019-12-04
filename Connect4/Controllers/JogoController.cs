@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Connect4.Data;
 using Connect4.Models;
+using Connect4.Models.JoggoViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Connect4.Controllers
@@ -117,9 +119,38 @@ namespace Connect4.Controllers
                 jogadorId == jogo.Jogador2Id)){
                 return Forbid();
             }
-            return View(jogo);
+
+            var listaComputadores = _context.JogadorComputador.Select(j => new SelectListItem() { Text = j.Nome, Value = j.Id.ToString() }).ToList();
+            listaComputadores.Add(new SelectListItem() { Selected = true, Text = "Esperar Jogador", Value = null });
+            var computadores = new SelectList(listaComputadores);
+
+            LobbyViewModel lobbyViewModel = new LobbyViewModel();
+            lobbyViewModel.jogo = jogo;
+            lobbyViewModel.Items = listaComputadores;
+            return View(lobbyViewModel);
         }
 
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Lobby(int id,[FromForm]LobbyViewModel viewModel)
+        {
+            var jogo = _context.Jogos
+               .Include(j => j.Jogador1)
+               .Include(j => j.Jogador2)
+               .Where(j => j.Id == id)
+               .Select(j => j)
+               .FirstOrDefault();
+            jogo.Jogador2 = null;
+            jogo.Jogador2Id = viewModel.jogo.Jogador2Id;            
+            if (jogo.Jogador2Id!= null)
+            {              
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Tabuleiro), new { Id = id });
+            }
+            return View(viewModel);
+            
+        }
         /// <summary>
         /// Ação para criar o jogo.
         /// Irá verificar se existe algum jogo disponível sem 
