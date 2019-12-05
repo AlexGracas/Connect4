@@ -64,6 +64,8 @@ namespace Connect4.Controllers
         {
             var jogo = _context.Jogos
                 .Include(j => j.Tabuleiro)
+                .Include(j => j.Jogador1)
+                .Include(j => j.Jogador2)
                 .Where(j => j.Id == id)
                 .FirstOrDefault();
 
@@ -71,13 +73,16 @@ namespace Connect4.Controllers
             {
                 throw new ApplicationException("Não Existe o Jogo");
             }
+            //Caso inicie pelo turno do Computador.
+            VerificarJogarComputador(jogo);
+            _context.SaveChanges();
             //TODO: Verificar Permissão antes.
             if (jogo.Tabuleiro != null)
-            {                
+            {
                 return jogo.Tabuleiro;
-            }
+            }            
             jogo.Tabuleiro = new Tabuleiro();
-            _context.SaveChanges();
+
             return jogo.Tabuleiro;
         }
 
@@ -114,34 +119,46 @@ namespace Connect4.Controllers
             //Por último executar a jogada ou exceção.
             jogo.Tabuleiro.Jogar(jogo.Tabuleiro.Turno, Pos);
 
+            VerificarJogarComputador(jogo);
 
-
-            var outroJogador = jogo.Tabuleiro.Turno == 1? jogo.Jogador1 : jogo.Jogador2;
-            if ( outroJogador is JogadorComputador)
-            {
-                var jogada = this.JogarComputador(jogo.Tabuleiro, (JogadorComputador)outroJogador);
-                jogo.Tabuleiro.Jogar(
-                    jogo.Tabuleiro.Turno,
-                    jogada.Result);
-            }
             _context.SaveChanges();
 
             return Ok(jogo.Tabuleiro);
         }
 
+
+        private void VerificarJogarComputador(Jogo jogo)
+        {
+            var outroJogador =
+                jogo.Tabuleiro.Turno == 1 ?
+                jogo.Jogador1 :
+                jogo.Jogador2;
+            if (outroJogador is JogadorComputador)
+            {
+                var jogada = this.JogarComputador(
+                        jogo.Tabuleiro,
+                        (JogadorComputador)outroJogador);
+                jogo.Tabuleiro.Jogar(
+                jogo.Tabuleiro.Turno,
+                jogada.Result);             
+            }
+        }
         private async Task<int> JogarComputador(Tabuleiro t, JogadorComputador jc)
         {
             using (var httpClient = new HttpClient())
             {
-                StringContent content = new StringContent(JsonConvert.SerializeObject(t), 
+                StringContent content = 
+                    new StringContent(JsonConvert.SerializeObject(t), 
                     Encoding.UTF8, 
                     "application/json");
 
-                using (var response = await httpClient.PostAsync(jc.URLServico, content))
+                using (var response = await httpClient.PostAsync(jc.URLServico, 
+                    content))
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        string apiResponse = 
+                            await response.Content.ReadAsStringAsync();
                         return JsonConvert.DeserializeObject<int>(apiResponse);
                     }
                     else

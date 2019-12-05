@@ -23,7 +23,8 @@ else
 <span>Jogador 2:</span>
 @if (Model.jogo.Jogador2 == null)
 {
-    @if (Model.jogo.Jogador1Id == UserManager.GetUserAsync(User).Result.JogadorId)
+    @if (Model.jogo.Jogador1Id 
+        == UserManager.GetUserAsync(User).Result.JogadorId)
     {
         <form asp-action="Lobby" method="post">
         <div class="form-group">

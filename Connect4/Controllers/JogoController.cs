@@ -120,7 +120,11 @@ namespace Connect4.Controllers
                 return Forbid();
             }
 
-            var listaComputadores = _context.JogadorComputador.Select(j => new SelectListItem() { Text = j.Nome, Value = j.Id.ToString() }).ToList();
+            var listaComputadores = _context
+                .JogadorComputador
+                .Select(j => new SelectListItem()
+                { Text = j.Nome, Value = j.Id.ToString() })
+                .ToList();
             listaComputadores.Add(new SelectListItem() { Selected = true, Text = "Esperar Jogador", Value = null });
             var computadores = new SelectList(listaComputadores);
 
